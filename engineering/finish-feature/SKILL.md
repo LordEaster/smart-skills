@@ -1,11 +1,11 @@
 ---
 name: finish-feature
-description: Use when the user wants to ship a completed fix or feature branch — detects package manager and default branch, runs tests, commits, pushes, and opens a PR.
+description: Use when the user wants to ship a completed fix or feature branch to development — detects package manager, runs tests, commits, pushes, and opens a PR targeting development.
 ---
 
 # Finish Feature / Fix
 
-Ship completed work. Follow every step in order.
+Ship completed work to `development`. Follow every step in order.
 
 **Step 0 — Confirm first**
 Ask: "Are you done and ready to ship?" Stop if no.
@@ -24,23 +24,17 @@ Run the detected test command. Stop and show failures if any.
 
 If no `package.json` exists (non-Node project), skip this step.
 
-**Step 2 — Detect default branch**
-```bash
-git remote show origin | grep "HEAD branch" | awk '{print $NF}'
-```
-Use this as `<base-branch>`. Falls back to checking for `main`, then `master`, then `development` if the remote command fails.
-
-**Step 3 — Pick branch name** from `git diff --stat HEAD`:
+**Step 2 — Pick branch name** from `git diff --stat HEAD`:
 - Bug fix → `fix/<3-5-word-description>`
 - Feature → `feature/<3-5-word-description>`
 
-**Step 4 — Create branch from base**
+**Step 3 — Create branch from development**
 ```bash
-git checkout <base-branch> && git pull origin <base-branch>
+git checkout development && git pull origin development
 git checkout -b <branch-name>
 ```
 
-**Step 5 — Stage and commit** (only files for this fix — no `.claude/`, no stray configs)
+**Step 4 — Stage and commit** (only files for this fix — no `.claude/`, no stray configs)
 ```bash
 git add <specific files>
 git commit -m "$(cat <<'EOF'
@@ -53,14 +47,14 @@ EOF
 )"
 ```
 
-**Step 6 — Push**
+**Step 5 — Push**
 ```bash
 git push -u origin <branch-name>
 ```
 
-**Step 7 — Open PR**
+**Step 6 — Open PR**
 ```bash
-gh pr create --base <base-branch> \
+gh pr create --base development \
   --title "<commit subject>" \
   --body "$(cat <<'EOF'
 ## Summary
@@ -75,9 +69,9 @@ EOF
 )"
 ```
 
-**Step 8 — Switch back**
+**Step 7 — Switch back**
 ```bash
-git checkout -   # falls back to: git checkout <base-branch>
+git checkout -   # falls back to: git checkout development
 ```
 
 Report PR URL and current branch.
