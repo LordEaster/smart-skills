@@ -1,32 +1,46 @@
 ---
 name: finish-feature
-description: Use when the user wants to ship a completed fix or feature branch to development — runs tests, creates branch, commits, pushes, and opens a PR targeting development.
+description: Use when the user wants to ship a completed fix or feature branch — detects package manager and default branch, runs tests, commits, pushes, and opens a PR.
 ---
 
 # Finish Feature / Fix
 
-Ship completed work to `development`. Follow every step in order.
+Ship completed work. Follow every step in order.
 
 **Step 0 — Confirm first**
 Ask: "Are you done and ready to ship?" Stop if no.
 
-**Step 1 — Run tests**
-```bash
-bun test
-```
-Stop and show failures if any.
+**Step 1 — Detect package manager** from lockfiles in the repo root:
 
-**Step 2 — Pick branch name** from `git diff --stat HEAD`:
+| Lockfile | Command |
+|----------|---------|
+| `bun.lock` / `bun.lockb` | `bun test` |
+| `pnpm-lock.yaml` | `pnpm test` |
+| `yarn.lock` | `yarn test` |
+| `package-lock.json` | `npm test` |
+| none of the above | `npm test` |
+
+Run the detected test command. Stop and show failures if any.
+
+If no `package.json` exists (non-Node project), skip this step.
+
+**Step 2 — Detect default branch**
+```bash
+git remote show origin | grep "HEAD branch" | awk '{print $NF}'
+```
+Use this as `<base-branch>`. Falls back to checking for `main`, then `master`, then `development` if the remote command fails.
+
+**Step 3 — Pick branch name** from `git diff --stat HEAD`:
 - Bug fix → `fix/<3-5-word-description>`
 - Feature → `feature/<3-5-word-description>`
 
-**Step 3 — Create branch from development**
+**Step 4 — Create branch from base**
 ```bash
-git checkout development && git pull origin development
+git checkout <base-branch> && git pull origin <base-branch>
 git checkout -b <branch-name>
 ```
 
-**Step 4 — Stage and commit** (only files for this fix — no `.claude/`, no stray configs)
+**Step 5 — Stage and commit** (only files for this fix — no `.claude/`, no stray configs)
 ```bash
 git add <specific files>
 git commit -m "$(cat <<'EOF'
@@ -39,14 +53,14 @@ EOF
 )"
 ```
 
-**Step 5 — Push**
+**Step 6 — Push**
 ```bash
 git push -u origin <branch-name>
 ```
 
-**Step 6 — Open PR**
+**Step 7 — Open PR**
 ```bash
-gh pr create --base development \
+gh pr create --base <base-branch> \
   --title "<commit subject>" \
   --body "$(cat <<'EOF'
 ## Summary
@@ -54,16 +68,16 @@ gh pr create --base development \
 
 ## Test Plan
 - [ ] <manual step>
-- [ ] `bun test` passes
+- [ ] Tests pass
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
 )"
 ```
 
-**Step 7 — Switch back**
+**Step 8 — Switch back**
 ```bash
-git checkout -   # falls back to: git checkout development
+git checkout -   # falls back to: git checkout <base-branch>
 ```
 
 Report PR URL and current branch.
