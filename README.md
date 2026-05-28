@@ -1,6 +1,6 @@
 # smart-skills
 
-Personal agent skills for Claude Code and Codex CLI.
+**Smart's** personal agent skills — "smart" is my name, not a description of the skills.
 
 Inspired by [9arm-skills](https://github.com/9arm/9arm-skills).
 
@@ -33,13 +33,15 @@ Symlinks every shippable skill into `~/.claude/skills/` (Claude Code) and `~/.co
 
 Re-run this whenever you add or rename a skill.
 
-### Via npx _(once public)_
+### Via npx (global)
 
-Once this repo is public, anyone can install with the [skills CLI](https://skills.sh/):
+Install globally across all agents (Claude Code, Codex, Antigravity, Gemini CLI, GitHub Copilot, etc.) with the [skills CLI](https://skills.sh/):
 
 ```bash
-npx skills add <your-github-username>/smart-skills
+npx skills add LordEaster/smart-skills -g
 ```
+
+> Repo is currently private — requires GitHub access. Will be public once stable.
 
 ---
 
