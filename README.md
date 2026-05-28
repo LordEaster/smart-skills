@@ -41,7 +41,6 @@ Install globally across all agents (Claude Code, Codex, Antigravity, Gemini CLI,
 npx skills add LordEaster/smart-skills -g
 ```
 
-> Repo is currently private — requires GitHub access. Will be public once stable.
 
 ---
 
