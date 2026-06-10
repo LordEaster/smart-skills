@@ -10,15 +10,19 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 DEST_DIRS=(
   "$HOME/.claude/skills"
   "$HOME/.codex/skills"
+  "$HOME/.gemini/config/skills"
+  "$HOME/.gemini/antigravity-cli/skills"
 )
 BINARIES=(
   "claude"
   "codex"
+  "antigravity"
+  "antigravity"
 )
 
 # Collect bucket dirs that actually exist
 BUCKETS=()
-for bucket in engineering productivity misc; do
+for bucket in engineering productivity misc research; do
   [ -d "$REPO/$bucket" ] && BUCKETS+=("$REPO/$bucket")
 done
 
@@ -27,19 +31,36 @@ if [ ${#BUCKETS[@]} -eq 0 ]; then
   exit 1
 fi
 
+link_skills_to_dir() {
+  local DEST="$1" label="$2"
+  mkdir -p "$DEST"
+  find "${BUCKETS[@]}" -name SKILL.md \
+    -not -path '*/node_modules/*' \
+    -not -path '*/deprecated/*' \
+    -not -path '*/in-progress/*' \
+    -not -path '*/personal/*' \
+    -print0 |
+  while IFS= read -r -d '' skill_md; do
+    src="$(dirname "$skill_md")"
+    name="$(basename "$src")"
+    target="$DEST/$name"
+    if [ -e "$target" ] && [ ! -L "$target" ]; then rm -rf "$target"; fi
+    ln -sfn "$src" "$target"
+    echo "linked [$label] $name"
+  done
+}
+
 i=0
 while [ $i -lt ${#DEST_DIRS[@]} ]; do
   DEST="${DEST_DIRS[$i]}"
   BINARY="${BINARIES[$i]}"
   i=$((i + 1))
 
-  # Skip if neither the binary nor the skills dir exists
   if ! command -v "$BINARY" &>/dev/null && [ ! -d "$DEST" ]; then
     echo "skip [$BINARY] not installed and $DEST does not exist"
     continue
   fi
 
-  # Bail out if DEST is a symlink that resolves into this repo
   if [ -L "$DEST" ]; then
     resolved="$(readlink -f "$DEST")"
     case "$resolved" in
@@ -51,24 +72,9 @@ while [ $i -lt ${#DEST_DIRS[@]} ]; do
     esac
   fi
 
-  mkdir -p "$DEST"
-
-  find "${BUCKETS[@]}" -name SKILL.md \
-    -not -path '*/node_modules/*' \
-    -not -path '*/deprecated/*' \
-    -not -path '*/in-progress/*' \
-    -not -path '*/personal/*' \
-    -print0 |
-  while IFS= read -r -d '' skill_md; do
-    src="$(dirname "$skill_md")"
-    name="$(basename "$src")"
-    target="$DEST/$name"
-
-    if [ -e "$target" ] && [ ! -L "$target" ]; then
-      rm -rf "$target"
-    fi
-
-    ln -sfn "$src" "$target"
-    echo "linked [$BINARY] $name"
-  done
+  link_skills_to_dir "$DEST" "$BINARY"
 done
+
+# Also keep the Claude plugin namespace (smart-skills:*) in sync
+PLUGIN_SKILLS_DIR="$HOME/.claude/plugins/cache/local/smart-skills/1.0.0/skills"
+link_skills_to_dir "$PLUGIN_SKILLS_DIR" "smart-skills plugin"

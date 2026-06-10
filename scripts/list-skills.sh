@@ -5,7 +5,7 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 
 # Collect bucket dirs that actually exist
 BUCKETS=()
-for bucket in engineering productivity misc; do
+for bucket in engineering productivity misc research; do
   [ -d "$REPO/$bucket" ] && BUCKETS+=("$REPO/$bucket")
 done
 
