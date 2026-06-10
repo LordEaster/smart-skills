@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="tasks" content="Task 1: Short title, Task 2: Short title, Task 3: Short title">
+<meta name="spec" content="S001">
+<meta name="requirements" content="FR-A1, FR-G1">
+<!-- infrastructure plans with no FR linkage: set requirements="" and add the note below in the Requirements section -->
+<title>Plan: Feature Name</title>
+<!-- CSS path by location:
+     docs/plans/      → _styles.css
+     docs/plans/done/ → ../_styles.css
+     docs/specs/      → ../plans/_styles.css -->
+<link rel="stylesheet" href="_styles.css">
+</head>
+<body>
+
+<h1>Plan: Feature Name</h1>
+<p class="meta">
+  Date: YYYY-MM-DD &nbsp;|&nbsp;
+  <span class="status active">active</span>
+  <!-- status: active · done · draft -->
+</p>
+
+<h2>Goal</h2>
+<p>One sentence — what this achieves and why.</p>
+
+<h2>Requirements</h2>
+<!-- infrastructure plan — no functional requirement linkage -->
+<table>
+  <thead><tr><th>ID</th><th>Requirement</th><th>Reference</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>FR-A1</td>
+      <td>Requirement description here</td>
+      <td><a href="../requirements/FR-general.html">FR-general</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Task 1: Short title</h2>
+<p><strong>Files:</strong> create/modify <code>path/to/file.ts</code></p>
+<ul class="checklist">
+  <li><label><input type="checkbox"> Step description (use signatures/pseudocode, not full code)</label></li>
+  <li><label><input type="checkbox"> Run tests: <code>bun test path/to/test</code></label></li>
+  <li><label><input type="checkbox"> Commit: <code>git commit -m "type: message"</code></label></li>
+</ul>
+
+<h2>Task 2: Short title</h2>
+<p><strong>Files:</strong> create/modify <code>path/to/file.ts</code></p>
+<ul class="checklist">
+  <li><label><input type="checkbox"> Step description</label></li>
+</ul>
+
+</body>
+</html>
