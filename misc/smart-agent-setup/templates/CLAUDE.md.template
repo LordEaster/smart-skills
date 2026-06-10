@@ -1,3 +1,13 @@
+<!-- Variables:
+  {PROJECT_NAME}             Q3
+  {DESCRIPTION}              Q4
+  {TEAM_SIZE}                Q6 → "Solo dev" | "Small team" | "Large team"
+  {HARD_RULES}               Q7 as bullets, or "- TODO: add architectural constraints"
+  {SERVICES_LIST}            Q10 names joined with " · "
+  {INSTRUCTION_FILES_TABLE}  one row per service: | [NN-name.md](NN-name.md) | name — TODO: describe |
+  {COMMIT_STYLE} {MAIN_BRANCH} {INTEGRATION_BRANCH} {RELEASE_STRATEGY}  from Q9
+  Omit sections not chosen in Q2/Q8.
+-->
 # {PROJECT_NAME} — Claude Instructions
 
 {DESCRIPTION}. {TEAM_SIZE}. **Maintainability over cleverness.**
