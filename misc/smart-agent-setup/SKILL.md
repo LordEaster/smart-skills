@@ -1,265 +1,97 @@
 ---
 name: smart-agent-setup
-description: Use when setting up a new project with agent config files (CLAUDE.md, symlinks), git rules, planning doc structure, and per-service instruction files — or when auditing an existing project for missing pieces.
+description: Use when setting up a new project with agent config files (CLAUDE.md, symlinks), git rules, planning doc structure, and per-service instruction files — or auditing an existing project for missing pieces.
 ---
 
 # Smart Agent Setup
 
-Wizard-style project scaffolding. **Ask ONE question, wait for the answer, then ask the next.** Execute everything only after all questions are answered and the user confirms.
+One question at a time. Execute only after user confirms.
 
----
+## Phase 1 — Detect
 
-## Phase 1 — Detection
-
-Run these checks in the current working directory:
-
-| Check | Command |
-|-------|---------|
-| `.claude/CLAUDE.md` exists | `ls .claude/` |
-| `AGENTS.md`, `GEMINI.md`, `.cursorrules` — symlinks? | `ls -la` and check symlink targets |
-| `docs/plans/`, `docs/plans/done/`, `docs/specs/`, `docs/requirements/` | `ls docs/` |
-| `.claude/` numbered service files (`01-*.md`, `02-*.md`, …) | `ls .claude/*.md` |
-
-Print a status report before asking any questions:
-
-```
-Status
-──────────────────────────────────────
-.claude/CLAUDE.md      ✓ found  / ✗ missing
-AGENTS.md              ✓ symlink / ✗ missing / ⚠ not a symlink
-GEMINI.md              ✓ symlink / ✗ missing / ⚠ not a symlink
-.cursorrules           ✓ symlink / ✗ missing / ⚠ not a symlink
-docs/plans/            ✓ found  / ✗ missing
-docs/plans/done/       ✓ found  / ✗ missing
-docs/specs/            ✓ found  / ✗ missing
-docs/requirements/     ✓ found  / ✗ missing
-.claude/ service files  N found  / ✗ none
+```bash
+ls -la && ls .claude/ 2>/dev/null && ls docs/ 2>/dev/null
 ```
 
-Skip items that already exist and are correct — only scaffold what is missing or broken.
+Print status — ✓ ok / ✗ missing / ⚠ wrong — for each:
+- `.claude/CLAUDE.md`
+- `AGENTS.md`, `GEMINI.md`, `.cursorrules` (must be symlinks → `.claude/CLAUDE.md`)
+- `docs/plans/`, `docs/plans/done/`, `docs/specs/`, `docs/requirements/`
+- `.claude/01-*.md` service files
 
----
+Only scaffold missing or broken items.
 
-## Phase 2 — Wizard (one question at a time)
+## Phase 2 — Wizard
 
-### Q1 — Symlink targets
+Ask each question, wait for answer, then ask the next.
 
-```
-Which agent files should point to CLAUDE.md?
-(all pre-selected — uncheck any you don't need, or add custom names)
+1. **Symlinks** — which files should point to CLAUDE.md? Default: `AGENTS.md` `GEMINI.md` `.cursorrules` — keep all, remove some, or add custom names?
+2. **Sections** — all CLAUDE.md sections, or pick? Options: Hard Rules / Before Implementing / Git / Planning / Instruction Files
+3. **Project name**
+4. **Description** — one sentence
+5. **Tech stack** — e.g. `React + Bun + Elysia`
+6. **Team size** — A) Solo  B) Small (2–5)  C) Large (6+)
+7. **Extra rules** — any architectural/package-manager/DB constraints? Or "no"
+8. *(If pick-and-choose in Q2)* **Which sections?** — select from the list above
+9. *(If Git chosen)* ask one at a time: branch strategy · commit style · protected branches · PR target · release strategy
+10. *(If Instruction Files chosen)* how many services? name each one.
 
-  [✓] AGENTS.md
-  [✓] GEMINI.md
-  [✓] .cursorrules
-  [ ] Other: ___
-```
+After Q7, ask: "Anything else to add to CLAUDE.md?" before moving on.
 
-### Q2 — Sections
+## Phase 3 — Confirm & Execute
 
-```
-Generate all CLAUDE.md sections, or pick which ones?
-  A) All sections
-  B) Pick-and-choose
-```
+Show full list of files to be created. Ask **"Confirm? (yes/no)"** — write nothing until yes.
 
-### Q3 — Project name
-
-```
-What is your project name?
-```
-
-### Q4 — Description
-
-```
-One sentence: what does this project do?
-```
-
-### Q5 — Tech stack
-
-```
-What's your tech stack? (e.g. React + Bun + Elysia)
-```
-
-### Q6 — Team size
-
-```
-Team size?
-  A) Solo
-  B) Small team (2–5)
-  C) Large team (6+)
-```
-
-### Q7 — Extra rules
-
-```
-Any other rules to capture? (package manager, DB constraints, API rules, etc.)
-Type them out, or say "no".
-```
-
-### Q8 — Section picker *(skip if "All sections" chosen in Q2)*
-
-```
-Which sections to include? (select all that apply)
-  [ ] Hard Rules
-  [ ] Before Implementing
-  [ ] Git
-  [ ] Planning (docs structure + naming conventions)
-  [ ] Instruction Files (per-service stubs)
-```
-
-### Q9 — Git details *(if Git selected; ask each sub-question one at a time)*
-
-1. `Branch strategy? A) main/development/feat…/fix…  B) main/feature/*  C) describe yours`
-2. `Commit style? A) imperative ≤72 chars  B) conventional commits feat:/fix:  C) describe yours`
-3. `Protected branches — never commit directly to? (e.g. "main development")`
-4. `Where do feat/fix branches PR into? (e.g. "development")`
-5. `Release strategy? A) manual  B) auto-tag on merge to main  C) describe yours`
-
-### Q10 — Services *(if Instruction Files selected; ask each sub-question one at a time)*
-
-1. `How many services or layers does your project have?`
-2. For each: `Name for service N? (e.g. backend-api, frontend, worker)`
-
----
-
-## Phase 3 — Summary & Execute
-
-List everything that will be created/updated, for example:
-
-```
-Will create:
-  .claude/CLAUDE.md              (new)
-  AGENTS.md → .claude/CLAUDE.md  (symlink)
-  GEMINI.md → .claude/CLAUDE.md  (symlink)
-  .cursorrules → .claude/CLAUDE.md (symlink)
-  docs/plans/_styles.css         (template)
-  docs/plans/_template.html      (template)
-  docs/plans/done/.gitkeep
-  docs/specs/.gitkeep
-  docs/requirements/.gitkeep
-  .claude/01-backend-api.md      (stub)
-  .claude/02-frontend.md         (stub)
-```
-
-Ask: **"Confirm? (yes / no)"** — do not create any files until the user says yes.
-
-### Execution order
-
+Execution order:
 1. `mkdir -p .claude docs/plans/done docs/specs docs/requirements`
-2. Write `.claude/CLAUDE.md` (see template below)
-3. Create symlinks: `ln -sf .claude/CLAUDE.md AGENTS.md` (repeat for each chosen target)
-4. Read templates from `{skill_base_dir}/templates/` and write to `docs/plans/`
-5. Write `.gitkeep` in each empty folder
-6. Write stub service files (see stub template below)
+2. Write `.claude/CLAUDE.md` — read `{skill_base_dir}/templates/CLAUDE.md.template`, substitute variables
+3. Symlinks: `ln -sf .claude/CLAUDE.md AGENTS.md` (repeat per chosen target)
+4. Copy `{skill_base_dir}/templates/_styles.css` → `docs/plans/_styles.css`
+5. Copy `{skill_base_dir}/templates/_template.html` → `docs/plans/_template.html`
+6. Write `.gitkeep` in `docs/plans/done/`, `docs/specs/`, `docs/requirements/`
+7. Write service stubs (see below)
 
-**`skill_base_dir`** is shown at the top of the skill output when invoked: `Base directory for this skill: /path/to/skill` — use that path to read the template files.
+`skill_base_dir` = the path on the first line of skill output: `Base directory for this skill: /path/to/skill`
 
----
+## CLAUDE.md Template Variables
 
-## CLAUDE.md Content Template
+Fill these when writing from `CLAUDE.md.template`:
 
-Fill in from the answers collected. Omit sections not chosen in Q8.
+| Variable | Source |
+|----------|--------|
+| `{PROJECT_NAME}` | Q3 |
+| `{DESCRIPTION}` | Q4 |
+| `{TEAM_SIZE}` | Q6 → "Solo dev" / "Small team" / "Large team" |
+| `{HARD_RULES}` | Q7 bullets, or `- TODO: add architectural constraints` |
+| `{SERVICES_LIST}` | Q10 names joined with ` · ` |
+| `{INSTRUCTION_FILES_TABLE}` | One row per service: `\| [NN-name.md](NN-name.md) \| name — TODO: describe \|` |
+| `{COMMIT_STYLE}` | Q9 commit answer |
+| `{MAIN_BRANCH}` | Q9 branch answer |
+| `{INTEGRATION_BRANCH}` | Q9 branch answer |
+| `{RELEASE_STRATEGY}` | Q9 release answer |
 
-```markdown
-# {Project Name} — Claude Instructions
+Omit sections not chosen in Q2/Q8.
 
-{Description}. {Solo dev / Small team / Large team}. **Maintainability over cleverness.**
+## Service Stub
 
-## Hard Rules
-
-{user's rules from Q7, one bullet per rule}
-{if none: - TODO: add architectural constraints}
-
-## Before Implementing
-
-1. Identify affected service: {service names joined with ·}
-2. Read the relevant instruction file below.
-3. Keep service boundaries clear.
-
-## Planning
-
-**Locations (never place files elsewhere):**
-- `docs/plans/` — active/upcoming (`.html`)
-- `docs/plans/done/` — completed, move here after implementation
-- `docs/specs/` — design specs (`.html`)
-- `docs/requirements/` — requirement group files (`.html`), one per role/category
-
-**After finishing a feature:** move the plan file from `docs/plans/` → `docs/plans/done/`.
-After moving, update the CSS link from `href="_styles.css"` → `href="../_styles.css"`.
-
-**Format:** `.html` files using `docs/plans/_template.html`.
-CSS lives in `docs/plans/_styles.css` (linked, not inline).
-
-### Naming conventions
-
-| Type | Pattern | Example |
-|------|---------|---------|
-| Spec | `S{NNN}-{YYYY-MM-DD}-{title}.html` | `S001-2026-01-01-name.html` |
-| Plan | `P{NNN}-{YYYY-MM-DD}-{title}.html` | `P001-2026-01-01-name.html` |
-| Requirement group | `{group}.html` | `FR-admin.html`, `NFR.html` |
-
-- `NNN` is sequential and global.
-- Assign numbers by date order (older = lower).
-- Plans in `done/` keep their original P-number.
-
-### When writing a plan
-
-- File goes in `docs/plans/` with the `P{NNN}` prefix.
-- Required `<head>` meta tags: `tasks`, `spec`, `requirements`.
-- Code examples = type signatures + pseudocode only. No full implementations.
-- No `Self-Review` section. Max ~6 tasks per file.
-
-### Requirements files (`docs/requirements/`)
-
-Starting groups: `FR-general.html` · `NFR.html`
-
-## Instruction files
-
-| File | Read when working on… |
-|------|----------------------|
-{row per service: | [{NN}-{service}.md]({NN}-{service}.md) | {service} — TODO: describe when to read | }
-
-## Git
-
-Commit messages: {commit style}. Don't commit `dist/`, `node_modules/`, `.env`.
-
-**Branches:**
-- `{main}` — stable releases only; never commit directly
-- `{integration}` — integration branch; never commit directly
-- `feat/…` / `fix/…` — branch from `{integration}` (default)
-
-**PR targets:** `feat/fix` → `{integration}`.
-
-**Release:** {release strategy}
-```
-
----
-
-## Service Instruction File Stub
-
-For each service, write `.claude/{NN}-{service-name}.md` (NN = zero-padded index starting at 01):
+Write `.claude/{NN}-{service}.md` per service (NN = zero-padded, starting at 01):
 
 ```markdown
 # {NN} — {Service Name}
 
 ## Overview
-
-TODO: describe this service's responsibilities.
+TODO: describe responsibilities.
 
 ## Key files
-
-TODO: list important files and directories.
+TODO: list important paths.
 
 ## Patterns
-
-TODO: add service-specific patterns, conventions, and anti-patterns.
+TODO: conventions and anti-patterns.
 ```
 
----
+## Safety
 
-## Rules
-
-- Never overwrite an existing `.claude/CLAUDE.md` — if it exists, only add missing sections.
-- Never overwrite existing symlinks that already point to the correct target.
-- Never overwrite existing template files in `docs/plans/`.
-- Always confirm before writing any file.
+- Existing `.claude/CLAUDE.md` → only add missing sections, never overwrite.
+- Existing symlink pointing to correct target → skip.
+- Existing `docs/plans/` template files → skip.
+- Always confirm before any write.

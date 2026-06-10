@@ -1,0 +1,65 @@
+# {PROJECT_NAME} — Claude Instructions
+
+{DESCRIPTION}. {TEAM_SIZE}. **Maintainability over cleverness.**
+
+## Hard Rules
+
+{HARD_RULES}
+
+## Before Implementing
+
+1. Identify affected service: {SERVICES_LIST}
+2. Read the relevant instruction file below.
+3. Keep service boundaries clear.
+
+## Planning
+
+**Locations (never place files elsewhere):**
+- `docs/plans/` — active/upcoming (`.html`)
+- `docs/plans/done/` — completed, move here after implementation
+- `docs/specs/` — design specs (`.html`)
+- `docs/requirements/` — requirement group files (`.html`), one per role/category
+
+**After finishing a feature:** move the plan file from `docs/plans/` → `docs/plans/done/`. After moving, update the CSS link from `href="_styles.css"` → `href="../_styles.css"`.
+
+**Format:** `.html` files using `docs/plans/_template.html`. CSS lives in `docs/plans/_styles.css` (linked, not inline).
+
+### Naming conventions
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Spec | `S{NNN}-{YYYY-MM-DD}-{title}.html` | `S001-2026-01-01-name.html` |
+| Plan | `P{NNN}-{YYYY-MM-DD}-{title}.html` | `P001-2026-01-01-name.html` |
+| Requirement group | `{group}.html` | `FR-admin.html`, `NFR.html` |
+
+- `NNN` is sequential and global. Assign by date order (older = lower). Plans in `done/` keep their P-number.
+
+### When writing a plan
+
+- File goes in `docs/plans/` with the `P{NNN}` prefix.
+- Required `<head>` meta tags: `tasks`, `spec`, `requirements`.
+- Code examples = type signatures + pseudocode only. No full implementations.
+- No `Self-Review` section. Max ~6 tasks per file.
+
+### Requirements files (`docs/requirements/`)
+
+Starting groups: `FR-general.html` · `NFR.html`
+
+## Instruction files
+
+| File | Read when working on… |
+|------|----------------------|
+{INSTRUCTION_FILES_TABLE}
+
+## Git
+
+Commit messages: {COMMIT_STYLE}. Don't commit `dist/`, `node_modules/`, `.env`.
+
+**Branches:**
+- `{MAIN_BRANCH}` — stable releases only; never commit directly
+- `{INTEGRATION_BRANCH}` — integration branch; never commit directly
+- `feat/…` / `fix/…` — branch from `{INTEGRATION_BRANCH}` (default)
+
+**PR targets:** `feat/fix` → `{INTEGRATION_BRANCH}`.
+
+**Release:** {RELEASE_STRATEGY}
