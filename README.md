@@ -58,6 +58,7 @@ npx skills add LordEaster/smart-skills -g
 ### Engineering
 
 - **[address-pr-review](./engineering/address-pr-review/SKILL.md)** — Address, respond to, or action bot/AI review comments (Copilot, CodeRabbit, etc.) on a GitHub PR.
+- **[delegate-to-agy](./engineering/delegate-to-agy/SKILL.md)** — Claude plans and reviews, the `agy` CLI implements: phased dispatch with a fixed-format report contract to keep both sides' context usage low.
 - **[finish-feature](./engineering/finish-feature/SKILL.md)** — Ship a completed fix or feature branch to development: detects package manager (bun/pnpm/yarn/npm), runs tests, creates branch, commits, pushes, and opens a PR targeting `development`.
 
 ### Productivity
