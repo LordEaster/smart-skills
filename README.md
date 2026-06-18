@@ -11,6 +11,7 @@ Inspired by [9arm-skills](https://github.com/9arm/9arm-skills).
 Skills live under bucket folders:
 
 - `engineering/` — daily code work
+- `research/` — research writing and notebook workflows
 - `productivity/` — daily non-code workflow tools
 - `misc/` — kept around but rarely used
 - `personal/` — tied to my own setup, not promoted
@@ -60,6 +61,11 @@ npx skills add LordEaster/smart-skills -g
 - **[address-pr-review](./engineering/address-pr-review/SKILL.md)** — Address, respond to, or action bot/AI review comments (Copilot, CodeRabbit, etc.) on a GitHub PR.
 - **[delegate-to-agy](./engineering/delegate-to-agy/SKILL.md)** — Claude plans and reviews, the `agy` CLI implements: phased dispatch with a fixed-format report contract to keep both sides' context usage low.
 - **[finish-feature](./engineering/finish-feature/SKILL.md)** — Ship a completed fix or feature branch to development: detects package manager (bun/pnpm/yarn/npm), runs tests, creates branch, commits, pushes, and opens a PR targeting `development`.
+- **[github-issue-triage-and-fix](./engineering/github-issue-triage-and-fix/SKILL.md)** — Inspect, triage, prioritize, group, or fix open GitHub issues from a repo's backlog.
+
+### Research
+
+- **[research-writing-style](./research/research-writing-style/SKILL.md)** — Write or edit research notebooks, reports, and summaries in a natural, Thai-first, non-AI-sounding voice grounded in actual outputs.
 
 ### Productivity
 
@@ -67,7 +73,7 @@ _(none yet)_
 
 ### Misc
 
-_(none yet)_
+- **[smart-agent-setup](./misc/smart-agent-setup/SKILL.md)** — Wizard to scaffold or audit a new project's agent config files (CLAUDE.md, symlinks), git rules, planning doc structure, and per-service instruction files.
 
 ---
 
